@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require_once "backend.php";
 
@@ -85,6 +85,13 @@ if (isset($_POST["weight"]) && !empty($_POST["weight"])) {
 
 			$(function () {
 				var data = [
+					{
+						label: 'smoothed weight',
+						strokeColor: '#A7A7D9',
+						pointColor: 'transparent',
+						pointStrokeColor: 'transparent',
+						data: <?php echo formatWeights(smoothWeights(getWeights())); ?>
+					},
 					{
 						label: 'weight',
 						strokeColor: '#A31515',
