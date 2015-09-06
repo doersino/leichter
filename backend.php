@@ -52,3 +52,20 @@ function formatWeights($weights) {
 	$formatted .= "]";
 	return $formatted;
 }
+
+function getChartRange($weights) {
+	$min = $weights[0]["weight"];
+	$max = $weights[0]["weight"];
+	foreach ($weights as $weight) {
+		if ($weight["weight"] < $min) {
+			$min = $weight["weight"];
+		} else if ($weight["weight"] > $max) {
+			$max = $weight["weight"];
+		}
+	}
+
+	$startValue = 5 * floor($min / 5);
+	$stepWidth = (5 * ceil($max / 5) - $startValue) / 25;
+
+	return array("steps" => 25, "stepWidth" => $stepWidth, "startValue" => $startValue);
+}

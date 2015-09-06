@@ -100,9 +100,10 @@ if (isset($_POST["weight"]) && !empty($_POST["weight"])) {
 					scaleType: "date",
 					scaleLabel: "<%=value%> kg",
 					scaleOverride: true,
-					scaleSteps: 25, // between 65 and 75 kg with step size .2
-					scaleStepWidth: 0.2,
-					scaleStartValue: 65,
+					<?php $chartRange = getChartRange(getWeights()); ?>
+					scaleSteps: <?php echo $chartRange["steps"]; ?>,
+					scaleStepWidth: <?php echo $chartRange["stepWidth"]; ?>,
+					scaleStartValue: <?php echo $chartRange["startValue"]; ?>
 				});
 			});
 		</script>
