@@ -15,6 +15,8 @@ if (isset($_POST["weight"]) && !empty($_POST["weight"])) {
 	header("Location: index.php");
 }
 
+$weights = getWeights();
+
 ?>
 
 <!DOCTYPE html>
@@ -90,12 +92,12 @@ if (isset($_POST["weight"]) && !empty($_POST["weight"])) {
 						strokeColor: '#A7A7D9',
 						pointColor: 'transparent',
 						pointStrokeColor: 'transparent',
-						data: <?php echo formatWeights(smoothWeights(getWeights())); ?>
+						data: <?php echo formatWeights(smoothWeights($weights)); ?>
 					},
 					{
 						label: 'weight',
 						strokeColor: '#A31515',
-						data: <?php echo formatWeights(getWeights()); ?>
+						data: <?php echo formatWeights($weights); ?>
 					}];
 
 				var ctx = document.getElementById("myChart").getContext("2d");
@@ -107,7 +109,7 @@ if (isset($_POST["weight"]) && !empty($_POST["weight"])) {
 					scaleType: "date",
 					scaleLabel: "<%=value%> kg",
 					scaleOverride: true,
-					<?php $chartRange = getChartRange(getWeights()); ?>
+					<?php $chartRange = getChartRange($weights); ?>
 					scaleSteps: <?php echo $chartRange["steps"]; ?>,
 					scaleStepWidth: <?php echo $chartRange["stepWidth"]; ?>,
 					scaleStartValue: <?php echo $chartRange["startValue"]; ?>
