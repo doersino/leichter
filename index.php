@@ -2,20 +2,38 @@
 
 require_once "backend.php";
 
-if (isset($_POST["weight"]) && !empty($_POST["weight"])) {
+if (isset($_POST["addWeight"]) && !empty($_POST["weight"])) {
 	$weight = $_POST["weight"];
 	$weight = str_replace(",", ".", $weight);
 	$weight = floatval($weight);
 	addWeight($weight);
 
-	header("Location: index.php");
-} else if (isset($_GET["action"]) && $_GET["action"] == "removeMostRecentWeight") {
+	$period = $_POST["period"];
+	header("Location: index.php?period=" . $period);
+	exit;
+} else if (isset($_POST["removeMostRecentWeight"])) {
 	removeMostRecentWeight();
 
-	header("Location: index.php");
+	$period = $_POST["period"];
+	header("Location: index.php?period=" . $period);
+	exit;
 }
 
-$weights = getWeights();
+$period = $_GET["period"];
+if ($period == "week") {
+	$start = strtotime("-1 week");
+} else if ($period == "month") {
+	$start = strtotime("-1 month");
+} else if ($period == "year") {
+	$start = strtotime("-1 year");
+} else if ($period == "all") {
+	$start = 0;
+} else {
+	header("Location: index.php?period=week");
+	exit;
+}
+
+$weights = getWeights($start);
 
 ?>
 
@@ -47,29 +65,49 @@ $weights = getWeights();
 				padding: 1em;
 				text-align: center;
 			}
+			select,
 			input {
 				border: 1px solid gray;
 				font: inherit;
 				outline: none;
 				padding: .5em;
 			}
-			a {
-				color: gray;
-				font-size: .7em;
+			select {
+				width: 6.5em;
+				margin-bottom: .33em;
+				background-color: white;
 			}
 			input[type="text"] {
 				width: 3.33em;
 			}
-			input[type="submit"] {
+			input[name="addWeight"] {
 				background-color: lightgray;
+			}
+			input[name="removeMostRecentWeight"] {
+				border: none;
+				background: none;
+				padding: 0;
+				color: gray;
+				font-size: .7em;
+				text-decoration: underline;
+				cursor: pointer;
+			}
+			input[name="removeMostRecentWeight"]:hover {
+				text-decoration: none;
 			}
 		</style>
 	</head>
 	<body>
 		<form action="index.php" method="post">
+			<select name="period" id="period">
+				<option value="week" <?php if ($period == "week") echo "selected"; ?>>Week</option>
+				<option value="month" <?php if ($period == "month") echo "selected"; ?>>Month</option>
+				<option value="year" <?php if ($period == "year") echo "selected"; ?>>Year</option>
+				<option value="all" <?php if ($period == "all") echo "selected"; ?>>All</option>
+			</select><br>
 			<input type="text" name="weight" autofocus placeholder="kg">
-			<input type="submit" value="Add"><br>
-			<a href="index.php?action=removeMostRecentWeight">remove most recent</a>
+			<input type="submit" name="addWeight" value="Add"><br>
+			<input type="submit" name="removeMostRecentWeight" value="remove most recent">
 		</form>
 		<canvas id="myChart"></canvas>
 
@@ -77,14 +115,21 @@ $weights = getWeights();
 		<script src="lib/Chart.Core.min.js"></script>
 		<script src="lib/Chart.Scatter.min.js"></script>
 		<script>
+			// update time period for chart
+			var sel = document.getElementById("period");
+			period.onchange = function() {
+				window.location.href = "index.php?period=" + this.value;
+			}
+
+			// set chart dimensions
 			var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 			var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 			document.getElementById("myChart").width = w / 5;
 			document.getElementById("myChart").height = h / 5;
 
+			// draw chart
 			Chart.defaults.global.responsive = true;
 			Chart.defaults.global.animation = false;
-
 			$(function () {
 				var data = [
 					{
