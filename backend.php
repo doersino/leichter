@@ -74,7 +74,7 @@ function gauss($x, $stdev) {
 	return exp(-(pow($x, 2) / (2 * pow($stdev, 2))));
 }
 
-function smoothWeights($weights) {
+function smoothWeights($weights, $numSamples = 100) {
 	// mean
 	$mean = 0;
 	foreach ($weights as $weight) {
@@ -93,10 +93,11 @@ function smoothWeights($weights) {
 
 	// sample points at which to evaluate the gauss function
 	$samples = array();
-	for ($i = $weights[0]["time"]; $i < $weights[sizeof($weights)-1]["time"]; $i += 6*60*60) {
-		$samples[] = $i;
+	$timeRange = $weights[sizeof($weights)-1]["time"] - $weights[0]["time"];
+	for ($i = 0; $i < $numSamples; $i++) {
+		$offset = intval(($i / ($numSamples - 1)) * $timeRange);
+		$samples[] = $weights[0]["time"] + $offset;
 	}
-	$samples[] = $weights[sizeof($weights)-1]["time"];
 
 	// compute smooth weights by weighting all weights at each sample point with the gauss function
 	$smoothWeights = array();
