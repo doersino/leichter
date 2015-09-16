@@ -74,7 +74,9 @@ function gauss($x, $stdev) {
 	return exp(-(pow($x, 2) / (2 * pow($stdev, 2))));
 }
 
-function smoothWeights($weights, $numSamples = 100) {
+function smoothWeights($weights, $bumpiness = 25, $numSamples = 100) {
+	$timeRange = $weights[sizeof($weights)-1]["time"] - $weights[0]["time"];
+
 	// mean
 	$mean = 0;
 	foreach ($weights as $weight) {
@@ -82,18 +84,18 @@ function smoothWeights($weights, $numSamples = 100) {
 	}
 	$mean /= sizeof($weights);
 
-	// standard deviation
+	// modified standard deviation
 	$stdev = 0;
 	foreach ($weights as $weight) {
 		$stdev += pow($weight["time"] - $mean, 2);
 	}
 	$stdev /= sizeof($weights);
+	$weeks = $timeRange / (60*60*24*7);
+	$stdev /= $bumpiness * $weeks;
 	$stdev = sqrt($stdev);
-	$stdev /= 5; // TODO make this dependent on the available time range, maybe don't use stdev at all
 
 	// sample points at which to evaluate the gauss function
 	$samples = array();
-	$timeRange = $weights[sizeof($weights)-1]["time"] - $weights[0]["time"];
 	for ($i = 0; $i < $numSamples; $i++) {
 		$offset = intval(($i / ($numSamples - 1)) * $timeRange);
 		$samples[] = $weights[0]["time"] + $offset;
