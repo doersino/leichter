@@ -64,8 +64,8 @@ function getChartRange($weights, $steps = 25) {
 		}
 	}
 
-	$startValue = 5 * floor($min / 5);
-	$stepWidth = (5 * ceil($max / 5) - $startValue) / $steps;
+	$startValue = 2.5 * floor($min / 2.5);
+	$stepWidth = (2.5 * ceil($max / 2.5) - $startValue) / $steps;
 
 	return array("steps" => $steps, "stepWidth" => $stepWidth, "startValue" => $startValue);
 }
