@@ -121,7 +121,10 @@ $weights = getWeights($start);
 		<?php if (sizeof($weights) == 0) { ?>
 			<p>No data available.</p>
 		<?php } else if (sizeof($weights) == 1) { ?>
-			<p>Found only one data point <?php if ($period != "all") echo "for this $period"; ?>:<br><?php echo $weights[0]["weight"]; ?>kg on <?php echo date("Y-m-d \a\\t H:i:s", $weights[0]["time"]); ?>.</p>
+			<p>
+				Found only one data point <?php if ($period != "all") echo "for this $period"; ?>:<br>
+				<?php echo $weights[0]["weight"]; ?>kg on <?php echo date("Y-m-d \a\\t H:i:s", $weights[0]["time"]); ?>.
+			</p>
 		<?php } else { ?>
 			<div>
 				<canvas id="myChart"></canvas>
