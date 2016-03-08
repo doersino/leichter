@@ -29,7 +29,7 @@ if ($period == "week") {
 } else if ($period == "all") {
 	$start = 0;
 } else {
-	header("Location: index.php?period=week");
+	header("Location: index.php?period=month");
 	exit;
 }
 
