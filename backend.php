@@ -35,6 +35,12 @@ function removeMostRecentWeight() {
 	query("DELETE FROM weight WHERE id = (SELECT MAX(id) FROM weight)");
 }
 
+function getMostRecentWeight() {
+	$result = query("SELECT * FROM weight WHERE id = (SELECT MAX(id) FROM weight)");
+	$weights = $result->fetch();
+	return $weights;
+}
+
 function getWeights($start = 0) {
 	$result = query("SELECT * FROM weight WHERE time >= $start ORDER BY id ASC");
 	$weights = $result->fetchAll();

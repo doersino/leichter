@@ -34,6 +34,7 @@ if ($period == "week") {
 }
 
 $weights = getWeights($start);
+$getMostRecentWeight = getMostRecentWeight();
 
 ?>
 
@@ -43,7 +44,7 @@ $weights = getWeights($start);
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" href="favicon.gif">
-		<title>Leichter</title>
+		<title><?php echo $getMostRecentWeight["weight"] . " kg" ?> - Leichter</title>
 		<style>
 			* {
 				font-weight: normal;
@@ -124,7 +125,7 @@ $weights = getWeights($start);
 		<?php } else if (sizeof($weights) == 1) { ?>
 			<p>
 				Found only one data point <?php if ($period != "all") echo "for this $period"; ?>:<br>
-				<?php echo $weights[0]["weight"]; ?>kg on <?php echo date("Y-m-d \a\\t H:i:s", $weights[0]["time"]); ?>.
+				<?php echo $weights[0]["weight"]; ?> kg on <?php echo date("Y-m-d \a\\t H:i:s", $weights[0]["time"]); ?>.
 			</p>
 		<?php } else { ?>
 			<div>
