@@ -78,8 +78,13 @@ $getMostRecentWeight = getMostRecentWeight();
 				margin-bottom: .33em;
 				background-color: white;
 			}
-			input[type="text"] {
+			input[type="number"] {
 				width: 3.33em;
+				-moz-appearance: textfield;
+			}
+			form ::-webkit-outer-spin-button,
+			input[type="number"]::-webkit-inner-spin-button {
+				-webkit-appearance: none;
 			}
 			input[name="addWeight"] {
 				background-color: lightgray;
@@ -116,7 +121,7 @@ $getMostRecentWeight = getMostRecentWeight();
 				<option value="year" <?php if ($period == "year") echo "selected"; ?>>Year</option>
 				<option value="all" <?php if ($period == "all") echo "selected"; ?>>All</option>
 			</select><br>
-			<input type="text" name="weight" autofocus placeholder="kg">
+			<input type="number" name="weight" step="0.1" autofocus placeholder="kg">
 			<input type="submit" name="addWeight" value="Add"><br>
 			<input type="submit" name="removeMostRecentWeight" value="remove most recent">
 		</form>
