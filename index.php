@@ -183,7 +183,6 @@ $getMostRecentWeight = getMostRecentWeight();
 		<?php } ?>
 		<script>
 			// update time period for chart
-			var sel = document.getElementById("period");
 			period.onchange = function() {
 				window.location.href = "index.php?period=" + this.value;
 			}
