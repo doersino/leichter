@@ -43,7 +43,8 @@ $getMostRecentWeight = getMostRecentWeight();
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="shortcut icon" href="favicon.gif">
+		<link rel="shortcut icon" href="favicon.png">
+		<link rel="apple-touch-icon" href="favicon.png">
 		<title><?php echo $getMostRecentWeight["weight"] . " kg" ?> - Leichter</title>
 		<style>
 			* {
