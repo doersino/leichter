@@ -26,8 +26,10 @@ function resetDatabase() {
 }
 
 function addWeight($weight) {
+	global $db;
+
 	$time = time();
-	$weight = sqlite_escape_string($weight);
+	$weight = $db->quote($weight);
 	query("INSERT INTO weight (time, weight) VALUES ($time, $weight)");
 }
 
