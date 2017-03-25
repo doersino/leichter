@@ -2,7 +2,7 @@
 
 A bare-bones weight tracking app with a simple and responsive web interface. "Leichter" is German for *lighter*, which is about as imaginative a name as I was able to come up with in a minute.
 
-![desktop](https://github.com/doersino/leichter/raw/master/screenshot.png)
+![desktop](screenshot.png)
 
 ## Installation
 1. [Make sure](http://stackoverflow.com/questions/1066521/php-with-sqlite3-support) to install on a webserver with PHP and SQLite3 support
