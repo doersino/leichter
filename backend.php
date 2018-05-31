@@ -28,6 +28,13 @@ function resetDatabase() {
 function addWeight($weight) {
 	global $db;
 
+	// allow new weight entry without a dot if within 5 kg of most recent weight
+	$result = query("SELECT * FROM weight WHERE id = (SELECT MAX(id) FROM weight)");
+	$weights = $result->fetch();
+	if (abs($weight - $weights["weight"] * 10) < 100) {
+		$weight = $weight / 10;
+	}
+
 	$time = time();
 	$weight = $db->quote($weight);
 	query("INSERT INTO weight (time, weight) VALUES ($time, $weight)");
