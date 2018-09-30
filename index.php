@@ -1,8 +1,70 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once "config.php";
 require_once "backend.php";
 
-if (isset($_POST["addWeight"]) && !empty($_POST["weight"])) {
+// authentication
+if (PASSWORD != "") {
+
+    // handle login form
+    if (isset($_POST["login"]) && !empty($_POST["pass"])) {
+        if (passwordValid($_POST["pass"])) {
+            startSession();
+
+            // for good measure
+            vacuumExpiredSessions();
+        } else {
+
+            // a sleep a day keeps the bad guys at bay
+            sleep(2);
+        }
+        header("Location: index.php");
+        exit;
+    }
+
+    // show login form if session invalid
+    // TODO make this prettier (but that goes for the entire app)
+    if (!sessionValid()) {
+        ?>
+        <form action="index.php" method="post">
+            <input type="password" name="pass" placeholder="Password" autofocus>
+            <input type="submit" class="submit" name="login">
+        </form>
+        <?php
+        exit;
+    }
+
+    // handle logout
+    if (isset($_GET["logout"])) {
+        killSession();
+
+        header("Location: index.php");
+        exit;
+    }
+}
+
+// danger zone
+if (isset($_GET["reset"])) {
+	if (!empty($_POST["really"]) && $_POST["really"] == "yes") {
+		resetDatabase();
+		echo "done";
+	} else {
+		?>
+		<form action="index.php?reset" method="POST">
+			<input type="text" name="really" autofocus placeholder="yes/no">
+			<input type="submit">
+		</form>
+		<?php
+	}
+	exit;
+}
+
+// add/remove
+if (isset($_POST["add_weight"]) && !empty($_POST["weight"])) {
 	$weight = $_POST["weight"];
 	$weight = str_replace(",", ".", $weight);
 	$weight = floatval($weight);
@@ -11,7 +73,7 @@ if (isset($_POST["addWeight"]) && !empty($_POST["weight"])) {
 	$period = $_POST["period"];
 	header("Location: index.php?period=" . $period);
 	exit;
-} else if (isset($_POST["removeMostRecentWeight"])) {
+} else if (isset($_POST["remove_most_recent"])) {
 	removeMostRecentWeight();
 
 	$period = $_POST["period"];
@@ -19,6 +81,11 @@ if (isset($_POST["addWeight"]) && !empty($_POST["weight"])) {
 	exit;
 }
 
+// period
+if (empty($_GET["period"])) {
+	header("Location: index.php?period=month");
+	exit;
+}
 $period = $_GET["period"];
 if ($period == "week") {
 	$start = strtotime("-1 week");
@@ -34,7 +101,6 @@ if ($period == "week") {
 }
 
 $weights = getWeights($start);
-$getMostRecentWeight = getMostRecentWeight();
 
 ?>
 
@@ -45,7 +111,7 @@ $getMostRecentWeight = getMostRecentWeight();
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" href="favicon.png">
 		<link rel="apple-touch-icon" href="favicon.png">
-		<title><?php echo $getMostRecentWeight["weight"] . " kg" ?> - Leichter</title>
+		<title><?php echo getMostRecentWeight() . " kg" ?> - Leichter</title>
 		<style>
 			* {
 				font-weight: normal;
@@ -73,6 +139,7 @@ $getMostRecentWeight = getMostRecentWeight();
 				font: inherit;
 				outline: none;
 				padding: .5em;
+				border-radius: 0;
 			}
 			select {
 				width: 6.5em;
@@ -87,10 +154,10 @@ $getMostRecentWeight = getMostRecentWeight();
 			input[type="number"]::-webkit-inner-spin-button {
 				-webkit-appearance: none;
 			}
-			input[name="addWeight"] {
+			input[name="add_weight"] {
 				background-color: lightgray;
 			}
-			input[name="removeMostRecentWeight"] {
+			input[name="remove_most_recent"] {
 				border: none;
 				background: none;
 				padding: 0;
@@ -99,7 +166,7 @@ $getMostRecentWeight = getMostRecentWeight();
 				text-decoration: underline;
 				cursor: pointer;
 			}
-			input[name="removeMostRecentWeight"]:hover {
+			input[name="remove_most_recent"]:hover {
 				text-decoration: none;
 			}
 			p {
@@ -123,8 +190,8 @@ $getMostRecentWeight = getMostRecentWeight();
 				<option value="all" <?php if ($period == "all") echo "selected"; ?>>All</option>
 			</select><br>
 			<input type="number" name="weight" step="0.1" autofocus placeholder="kg">
-			<input type="submit" name="addWeight" value="Add"><br>
-			<input type="submit" name="removeMostRecentWeight" value="remove most recent">
+			<input type="submit" name="add_weight" value="Add"><br>
+			<input type="submit" name="remove_most_recent" value="remove most recent">
 		</form>
 		<?php if (sizeof($weights) == 0) { ?>
 			<p>No data available.</p>
