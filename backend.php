@@ -148,53 +148,6 @@ function getChartRange($weights, $steps = 25) {
 	return array("steps" => $steps, "stepWidth" => $stepWidth, "startValue" => $startValue);
 }
 
-function gauss($x, $stdev) {
-	return exp(-(pow($x, 2) / (2 * pow($stdev, 2))));
-}
-
-function smoothWeights($weights, $bumpiness = 25, $numSamples = 100) {
-	$timeRange = $weights[sizeof($weights)-1]["time"] - $weights[0]["time"];
-
-	// mean
-	$mean = 0;
-	foreach ($weights as $weight) {
-		$mean += $weight["time"];
-	}
-	$mean /= sizeof($weights);
-
-	// modified standard deviation
-	$stdev = 0;
-	foreach ($weights as $weight) {
-		$stdev += pow($weight["time"] - $mean, 2);
-	}
-	$stdev /= sizeof($weights);
-	$weeks = $timeRange / (60*60*24*7);
-	$stdev /= $bumpiness * $weeks;
-	$stdev = sqrt($stdev);
-
-	// sample points at which to evaluate the gauss function
-	$samples = array();
-	for ($i = 0; $i < $numSamples; $i++) {
-		$offset = intval(($i / ($numSamples - 1)) * $timeRange);
-		$samples[] = $weights[0]["time"] + $offset;
-	}
-
-	// compute smooth weights by weighting all weights at each sample point with the gauss function
-	$smoothWeights = array();
-	foreach ($samples as $sample) {
-		$weightedWeight = 0;
-		$normalizationFactor = 0;
-		for ($j = 0; $j < sizeof($weights); $j++) {
-			$timeDifference = $sample - $weights[$j]["time"];
-			$weightedWeight += $weights[$j]["weight"] * gauss($timeDifference, $stdev);
-			$normalizationFactor += gauss($timeDifference, $stdev);
-		}
-		$weightedWeight /= $normalizationFactor;
-		$smoothWeights[] = array("time" => $sample, "weight" => $weightedWeight);
-	}
-	return $smoothWeights;
-}
-
 /////////////////
 // DANGER ZONE //
 /////////////////

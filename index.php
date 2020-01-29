@@ -220,13 +220,6 @@ $weights = getWeights($start);
 				$(function () {
 					var data = [
 						{
-							label: 'smoothed weight',
-							strokeColor: '#A7A7D9',
-							pointColor: 'transparent',
-							pointStrokeColor: 'transparent',
-							data: <?php echo formatWeights(smoothWeights($weights)); ?>
-						},
-						{
 							label: 'weight',
 							strokeColor: '#A31515',
 							data: <?php echo formatWeights($weights); ?>
