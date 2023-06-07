@@ -6,7 +6,7 @@ A bare-bones weight tracking app with a simple and responsive web interface. "Le
 
 ## Installation
 1. [Make sure](http://stackoverflow.com/questions/1066521/php-with-sqlite3-support) to install on a webserver with PHP and SQLite3 support
-2. Create a file `config.php` with the following content, replacing `""` with a password if you wish to password-protect your instance and setting a path to the database file, which will be created in the next step:
+2. Create a file `config.php` with the following content, replacing `""` with a password if you wish to password-protect your instance (you can also set an API key to expose a simple API for adding a weight – I use this via iOS Shortcuts) and setting a path to the database file, which will be created in the next step:
 
     ```php
     <?php
@@ -14,6 +14,8 @@ A bare-bones weight tracking app with a simple and responsive web interface. "Le
     // authentication (leave blank to disable)
     const PASSWORD = "";
     const SESSION_LENGTH = 30;  // number of days a login is valid
+
+    const API_KEY = "...";
 
     // path to where you'd like the database to be located (make sure it's not publicly accessible)
     const DB_PATH = "....sqlite";

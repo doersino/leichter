@@ -7,6 +7,22 @@ error_reporting(E_ALL);
 require_once "config.php";
 require_once "backend.php";
 
+// api (for shortcuts)
+if (!empty(API_KEY) && isset($_GET["api_key"]) && !empty($_GET["weight"])) {
+	if ($_GET["api_key"] != API_KEY) {
+		die("incorrect api key");
+	}
+
+	$weight = $_GET["weight"];
+	$weight = str_replace(",", ".", $weight);
+	$weight = floatval($weight);
+	$weight = addWeight($weight);
+
+	// no error handling (low potential)
+	echo "success " . $weight;
+	exit;
+}
+
 // authentication
 if (PASSWORD != "") {
 

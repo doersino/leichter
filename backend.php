@@ -91,8 +91,10 @@ function addWeight($weight) {
 	}
 
 	$time = time();
-	$weight = escape($weight);
-	query("INSERT INTO weight (time, weight) VALUES ($time, $weight)");
+	$escapedWeight = escape($weight);
+	query("INSERT INTO weight (time, weight) VALUES ($time, $escapedWeight)");
+
+	return $weight;
 }
 
 function removeMostRecentWeight() {
