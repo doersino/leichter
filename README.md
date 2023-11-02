@@ -24,4 +24,15 @@ A bare-bones weight tracking app with a simple and responsive web interface. "Le
 3. Access `index.php?reset` in a browser, type "yes" (after logging in if you've set a password in the previous step) and press enter to set up the database
 4. Go to `index.php` and start tracking your weight! *Pro tip:* There's no logout button, but you can log out by appending "&logout" to any URL.
 
+
+## Export to CSV
+
+Assuming your database is located in the current working directory and named `leichter.sqlite`, run the following command:
+
+```sh
+sqlite3 -csv leichter.sqlite "SELECT datetime(time, 'unixepoch', 'localtime'), weight FROM weight ORDER BY time;" > leichter.csv
+```
+
+---
+
 Note that the [license](https://github.com/doersino/leichter/blob/master/LICENSE) does not apply to files in `lib/`, those come with their own licenses.
